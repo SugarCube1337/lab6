@@ -1,18 +1,15 @@
 package org.lab6.task;
 
 import org.lab6.Main;
-import org.lab6.collection.CollectionManager;
-import org.lab6.parser.InputManager;
 
 /**
  * Command for removing all elements with greater id
- * @author MixaDev
  */
-public class RemoveGreaterCommand implements Command {
+public class RemoveGreaterTask implements Task {
     @Override
     public void execute(String[] args) {
         if(args.length < 1) {
-            System.out.println("Необходимо указать id, использование: remove_greater [id]");
+            System.out.println("Need to specify id, usage: remove_greater [id]");
             return;
         }
         int id;
