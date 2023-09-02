@@ -16,9 +16,10 @@ public class BaseCommandParser implements CommandParser {
 
     /**
      * Checks if input is matched with command pattern
+     *
      * @param command parsed command represented as array of keywords
-     * @param args command pattern represented as array of keywords,
-     *             values represent command keywords <b>null</b> represents parameters
+     * @param args    command pattern represented as array of keywords,
+     *                values represent command keywords <b>null</b> represents parameters
      * @return true if matches, otherwise false
      */
     private static boolean isMatching(List<? extends CharSequence> command, String... args) {
@@ -35,6 +36,7 @@ public class BaseCommandParser implements CommandParser {
         }
         return true;
     }
+}
 
     /**
      *
@@ -44,7 +46,7 @@ public class BaseCommandParser implements CommandParser {
      * @throws IOException thrown when there are troubles with file
      * @throws NoSuchMethodException thrown when command is not matched
      */
-    private Task match(List<String> command, InputManager inputManager) throws IOException, NoSuchMethodException {
+    /**private Task match(List<String> command, InputManager inputManager) throws IOException, NoSuchMethodException {
         if (isMatching(command, "help")) {
             return new HelpTask();
         }
@@ -100,7 +102,7 @@ public class BaseCommandParser implements CommandParser {
      * Parses the command using regular expressions
      * @param input line to be parsed
      * @param inputManager handles the input
-     */
+     *
     @Override
     public void parse(String input, InputManager inputManager) {
         input = input.trim();
@@ -124,3 +126,4 @@ public class BaseCommandParser implements CommandParser {
     }
 }
 
+*/

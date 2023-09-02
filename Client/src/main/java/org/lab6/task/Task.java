@@ -3,11 +3,20 @@ package org.lab6.task;
 /**
  * Interface that represents task for command
  */
-@FunctionalInterface
 public interface Task {
-
     /**
-     * Execute corresponding task
+     * Method called when a command executed
+     * @param args Given arguments
      */
-    void execute();
+    public void execute(String[] args);
+    /**
+     * Getting a description of command for command list
+     * @return Description in command list
+     */
+    public String getDesctiption();
+    /**
+     * Getting a required arguments for command
+     * @return Argument names
+     */
+    public String[] getArgumentNames();
 }

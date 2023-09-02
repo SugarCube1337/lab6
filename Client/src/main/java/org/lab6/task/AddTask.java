@@ -1,30 +1,79 @@
 package org.lab6.task;
 
-import org.lab6.collection.CollectionManager;
-import org.lab6.parser.InputManager;
 
+
+import com.google.gson.Gson;
+import org.lab6.Main;
+import org.lab6.collection.data.Coordinates;
+import org.lab6.collection.data.Location;
+import org.lab6.collection.data.Route;
+
+import java.util.Scanner;
+
+/**
+ * Command for adding a new object to the collection
+ */
 public class AddTask implements Task {
+    @Override
+    public void execute(String[] args) {
+        if (args.length > 0) {
+            try {
+                String jsonInput = String.join(" ", args);
+                Gson gson = new Gson();
+                Route organization = gson.fromJson(jsonInput, Route.class);
 
-    private final InputManager inputManager;
-
-    public AddTask(InputManager inputManager) {
-        this.inputManager = inputManager;
+                if (Main.getConnectionManager().add(organization))
+                    System.out.println("Subject added.");
+            } catch (Exception ex) {
+                System.out.println("Incorrect object data entered or JSON reading error!");
+            }
+        }
+        Route created = new Route();
+        setValue("name", () -> created.setName(new Scanner(System.in).nextLine()));
+        created.setCoordinates(createCoordinates());
+        setValue("distance", () -> created.setDistance(new Scanner(System.in)));
+        created.setTo(createLocation());
+        created.setFrom(createLocation());
+        if (Main.getConnectionManager().add(created))
+            System.out.println("Subject added.");
     }
 
-    @Override
-    public void execute() {
+    private void setValue(String label, Runnable setter) {
         while (true) {
-            var route = Tasks.getRoute(inputManager);
-            System.out.println("You are about to add route:");
-            System.out.println(route);
-            if (Tasks.getApproval("Proceed", inputManager)) {
-                CollectionManager.add(route);
-                System.out.println("Successfully added element");
-                return;
-            }
-            if (!Tasks.getApproval("Do you want to refill element with another values", inputManager)) {
-                return;
+            System.out.print("Enter " + label + ": ");
+            try {
+                setter.run();
+                break;
+            } catch (IllegalArgumentException ex) {
+                System.out.println(ex.getMessage());
             }
         }
     }
+
+    private Coordinates createCoordinates() {
+        Coordinates created = new Coordinates(0, 0);
+        setValue("координаты, X", () -> created.setX(new Scanner(System.in)));
+        setValue("координаты, Y", () -> created.setY(new Scanner(System.in)));
+        return created;
+    }
+
+
+    private Location.To createLocation() {
+        Location created = new Location(0, 0, null);
+        setValue("город, местоположение, X", () -> created.setX(new Scanner(System.in)));
+        setValue("город, местоположение, Y", () -> created.setY(new Scanner(System.in)));
+        setValue("город, местоположение, название", () -> created.setName(new Scanner(System.in).nextLine()));
+        return created;
+    }
+
+    @Override
+    public String getDesctiption() {
+        return "добавить новый элемент в коллекцию";
+    }
+
+    @Override
+    public String[] getArgumentNames() {
+        return new String[0];
+    }
 }
+

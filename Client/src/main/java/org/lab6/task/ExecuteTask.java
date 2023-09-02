@@ -1,10 +1,10 @@
 package org.lab6.task;
 
+import org.lab6.Main;
 import org.lab6.parser.CommandParser;
 import org.lab6.parser.InputManager;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -12,49 +12,70 @@ import java.util.*;
  * It processes the commands in the script file, allowing for recursive execution of scripts.
  */
 public class ExecuteTask implements Task {
-
-    private final CommandParser parser;
-    private final String filepath;
-    private final InputManager inputManager;
-
-    public ExecuteTask(CommandParser parser, String filepath, InputManager inputManager) {
-        this.parser = parser;
-        this.filepath = filepath;
-        this.inputManager = inputManager;
-    }
-
+    public static List<String> executedScripts = new ArrayList<>();
     @Override
-    public void execute() {
-        Set<String> used = new HashSet<>();
-        processScript(filepath, used);
-    }
-
-    private void processScript(String scriptPath, Set<String> used) {
-        if (used.contains(scriptPath)) {
-            System.out.println("Recursion detected: " + scriptPath);
+    public void execute(String[] args) {
+        if(args.length < 1) {
+            System.out.println("Необходимо указать имя файла, использование: execute_script [file_name]");
             return;
         }
-
-        used.add(scriptPath);
-
-        try (Scanner scanner = new Scanner(new File(scriptPath))) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                System.out.println(line);
-                if (line.startsWith("execute_script")) {
-                    String match = line.substring("execute_script".length()).trim();
-                    if (used.contains(match)) {
-                        System.out.println("Recursion detected: " + match);
-                    } else {
-                        processScript(match, new HashSet<>(used));
+        List<String> commands = new ArrayList<>();
+        StringBuilder line = new StringBuilder();
+        executedScripts.add(args[0]);
+        try {
+            InputStreamReader reader = new InputStreamReader(new FileInputStream(args[0]));
+            int c;
+            while ((c = reader.read()) != -1) {
+                if ((char) c == '\n') {
+                    String finished = line.toString();
+                    line = new StringBuilder();
+                    if(finished.startsWith("execute_script")) {
+                        boolean pass = true;
+                        for(String script : new ArrayList<>(executedScripts))
+                            if(finished.contains(script)) {
+                                System.out.println("Нельзя запустить скрипт, запущенный ранее");
+                                pass = false;
+                                break;
+                            }
+                        if(pass) {
+                            executedScripts.add(finished.replace("\r", ""));
+                            commands.add(finished.replace("\r", "")); // Windows adaptation
+                        }
+                    } else
+                        commands.add(finished.replace("\r", "")); // Windows adaptation
+                } else
+                    line.append((char) c);
+            }
+        } catch(IOException ex) {
+            System.out.println("Не удалось прочитать данные из файла");
+        }
+        if(line.length() > 0 && line.toString().replace("\r", "").replace("\n", "").length() > 0) {
+            if(line.toString().startsWith("execute_script")) {
+                boolean pass = true;
+                for(String script : new ArrayList<>(executedScripts))
+                    if(line.toString().contains(script)) {
+                        System.out.println("Нельзя запустить скрипт, запущенный ранее");
+                        pass = false;
+                        break;
                     }
-                } else {
-                    parser.parse(line, inputManager);
+                if(pass) {
+                    executedScripts.add(line.toString().replace("\r", "").replace("\n", ""));
+                    commands.add(line.toString().replace("\r", "").replace("\n", "")); // Windows adaptation
                 }
             }
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("Error while reading the file: " + e.getMessage());
+            else
+                commands.add(line.toString().replace("\r", "").replace("\n", "")); // Windows adaptation
         }
+        for(String command : commands)
+            Main.getCommandManager().executeInput(command);
+    }
+    @Override
+    public String getDesctiption() {
+        return "исполнить скрипт из указанного файла";
+    }
+    @Override
+    public String[] getArgumentNames() {
+        return new String[]{"file_name"};
     }
 }
 

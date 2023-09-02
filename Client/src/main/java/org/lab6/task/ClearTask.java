@@ -1,12 +1,24 @@
 package org.lab6.task;
 
-import org.lab6.collection.CollectionManager;
+import org.lab6.Main;
 
+/**
+ * Command for clearing the whole collection
+ */
 public class ClearTask implements Task {
+    @Override
+    public void execute(String[] args) {
+        Main.getConnectionManager().clear();
+        System.out.println("The collection has been cleared");
+    }
 
     @Override
-    public void execute() {
-        System.out.println("Clearing the collection");
-        CollectionManager.clear();
+    public String getDesctiption() {
+        return "clean up the collection";
+    }
+
+    @Override
+    public String[] getArgumentNames() {
+        return new String[0];
     }
 }

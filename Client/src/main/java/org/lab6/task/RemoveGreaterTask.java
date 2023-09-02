@@ -1,24 +1,37 @@
 package org.lab6.task;
 
+import org.lab6.Main;
 import org.lab6.collection.CollectionManager;
 import org.lab6.parser.InputManager;
 
-public class RemoveGreaterTask implements Task {
-
-    private final InputManager inputManager;
-
-    public RemoveGreaterTask(InputManager inputManager) {
-        this.inputManager = inputManager;
-    }
-
+/**
+ * Command for removing all elements with greater id
+ * @author MixaDev
+ */
+public class RemoveGreaterCommand implements Command {
     @Override
-    public void execute() {
-        var route = Tasks.getRoute(inputManager);
-        if (CollectionManager.removeGreater(route)) {
-            System.out.println("Elements were removed");
-        } else {
-            System.out.println("None of the elements were removed");
+    public void execute(String[] args) {
+        if(args.length < 1) {
+            System.out.println("Необходимо указать id, использование: remove_greater [id]");
+            return;
         }
+        int id;
+        try {
+            id = Integer.parseInt(args[0]);
+        } catch(NumberFormatException ex) {
+            System.out.println("Incorrect number entered");
+            return;
+        }
+        Main.getConnectionManager().removeGreater(id);
+        System.out.println("Objects removed");
+    }
+    @Override
+    public String getDesctiption() {
+        return "remove from the collection all items exceeding the given id";
+    }
+    @Override
+    public String[] getArgumentNames() {
+        return new String[]{"id"};
     }
 }
 

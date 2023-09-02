@@ -187,7 +187,8 @@ public class Tasks {
      *
      * @param inputManager handles the input
      * @return provided coordinates
-     */
+
+
     public static Route getRoute(InputManager inputManager) {
         String name = null;
         Coordinates coordinates = null;
@@ -233,7 +234,7 @@ public class Tasks {
             }
         }
     }
-
+*/
     /**
      * Requests approval using inputManager
      * @param inputManager handles the input
