@@ -1,10 +1,8 @@
 package org.lab6;
 
 
-import org.lab6.exception.AbortException;
-import org.lab6.parser.BaseCommandParser;
-import org.lab6.parser.CommandParser;
-import org.lab6.parser.ConsoleInputManager;
+import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -14,39 +12,42 @@ import org.lab6.parser.ConsoleInputManager;
 
 
 public class Main {
+    private static StorageManager storageManager;
+    private static ConnectionManager connectionManager;
 
-    private static final String DEFAULT_PATH = "data.json";
-    private static String path = DEFAULT_PATH;
-
-    /**
-     * Entry point for the project
-     *
-     * @param args contains information about collection's data
-     */
     public static void main(String[] args) {
-        if (args.length > 0) {
-            path = args[0];
-        } else {
-            System.err.println("Path to data is not provided, using default: " + DEFAULT_PATH);
-        }
+        System.out.println("Route management");
+        File file = new File("data.json");
+        String filename = file.getAbsolutePath();
 
-        CollectionLoader.loadCollection(path);
-
-        final CommandParser parser = new BaseCommandParser();
-        try (ConsoleInputManager inputManager = new ConsoleInputManager(parser)) {
-            inputManager.start();
-        } catch (AbortException ex) {
-            System.out.println("Operation aborted, stopping the program");
+        while (true) {
+            storageManager = new StorageManager(filename);
+            connectionManager = new ConnectionManager();
+            try {
+                connectionManager.run();
+            } catch (IOException ex) {
+                //ex.printStackTrace();
+                System.out.println("Application restart..." + ex);
+            }
         }
     }
 
     /**
-     * Returns path to file where data is located
+     * Get storage manager
      *
-     * @return path to file with data
+     * @return Storage manager
      */
-    public static String getPath() {
-        return path;
+    public static StorageManager getStorageManager() {
+        return storageManager;
+    }
+
+    /**
+     * Get command manager
+     *
+     * @return Command manager
+     */
+    public static ConnectionManager getConnectionManager() {
+        return connectionManager;
     }
 }
 

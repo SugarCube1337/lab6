@@ -1,10 +1,9 @@
 package org.lab6.collection.data;
 
-import org.lab6.exception.IllegalFieldException;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.Scanner;
 
 /**
  * A class representing a pair of coordinates (x, y).
@@ -14,28 +13,40 @@ public class Coordinates implements Serializable {
     @Serial
     private static final long serialVersionUID = -5296510993918124324L;
 
-    private Double x; //Поле не может быть null
+    private float x; //Поле не может быть null
     private int y;
 
-    public Coordinates() {}
-
-    public Coordinates(Double x, int y) {
-        this.setX(x);
-        this.setY(y);
+    public Coordinates() {
     }
 
-    public void setX(Double x) {
-        if (x == null) {
-            throw new IllegalFieldException("x", this);
-        }
+    public Coordinates(float x, int y) {
         this.x = x;
-    }
-
-    public void setY(int y) {
         this.y = y;
     }
 
-    public Double getX() {
+    public void setX(Scanner scan) {
+        Double x;
+        try {
+            x = scan.nextDouble();
+        } catch (Exception ex) {
+            scan.nextLine();
+            throw new IllegalArgumentException("The value of X must be a number");
+        }
+
+    }
+
+    public void setY(Scanner scan) {
+        int y;
+        try {
+            y = scan.nextInt();
+        } catch (Exception ex) {
+            scan.nextLine();
+            throw new IllegalArgumentException("The Y value must be a number");
+        }
+
+    }
+
+    public float getX() {
         return x;
     }
 
@@ -49,17 +60,5 @@ public class Coordinates implements Serializable {
                 "x=" + x +
                 ", y=" + y +
                 ']';
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Coordinates that)) return false;
-        return getY() == that.getY() && getX().equals(that.getX());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getX(), getY());
     }
 }
