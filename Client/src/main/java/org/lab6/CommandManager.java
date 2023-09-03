@@ -22,10 +22,10 @@ public class CommandManager {
         registerCommand("execute_script", new ExecuteTask());
         registerCommand("exit", new ExitTask());
         registerCommand("remove_greater", new RemoveGreaterTask());
-        registerCommand("remove_lower", new RemoveLowerTask());
-        registerCommand("group_counting_by_to", new GroupByToTask());
-        registerCommand("count_greater_than_distance distance", new CountGreaterDistance());
-        registerCommand("print_unique_distance", new PrintUniqueDistanceTask());
+        registerCommand("remove_last", new RemoveLastTask());
+        registerCommand("reorder", new ReorderTask());
+        registerCommand("max_by_distance", new MaxByDistanceTask());
+
     }
     /**
      * Start reading user prompt

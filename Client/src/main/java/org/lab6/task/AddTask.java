@@ -1,7 +1,6 @@
 package org.lab6.task;
 
 
-
 import com.google.gson.Gson;
 import org.lab6.Main;
 import org.lab6.collection.data.Coordinates;
@@ -29,11 +28,10 @@ public class AddTask implements Task {
             }
         }
         Route created = new Route();
-        setValue("name", () -> created.setName(new Scanner(System.in).nextLine()));
+        setValue("Name", () -> created.setName(new Scanner(System.in).nextLine()));
         created.setCoordinates(createCoordinates());
-        setValue("distance", () -> created.setDistance(new Scanner(System.in)));
-        created.setTo(createLocation());
-        created.setFrom(createLocation());
+        setValue("Distance", () -> created.setDistance(new Scanner(System.in)));
+        created.setLocation(createLocation());
         if (Main.getConnectionManager().add(created))
             System.out.println("Subject added.");
     }
@@ -52,23 +50,23 @@ public class AddTask implements Task {
 
     private Coordinates createCoordinates() {
         Coordinates created = new Coordinates(0, 0);
-        setValue("координаты, X", () -> created.setX(new Scanner(System.in)));
-        setValue("координаты, Y", () -> created.setY(new Scanner(System.in)));
+        setValue("Coordinates, X", () -> created.setX(new Scanner(System.in)));
+        setValue("Coordinates, Y", () -> created.setY(new Scanner(System.in)));
         return created;
     }
 
 
-    private Location.To createLocation() {
+    private Location createLocation() {
         Location created = new Location(0, 0, null);
-        setValue("город, местоположение, X", () -> created.setX(new Scanner(System.in)));
-        setValue("город, местоположение, Y", () -> created.setY(new Scanner(System.in)));
-        setValue("город, местоположение, название", () -> created.setName(new Scanner(System.in).nextLine()));
+        setValue("Location, X", () -> created.setX(new Scanner(System.in)));
+        setValue("Location, Y", () -> created.setY(new Scanner(System.in)));
+        setValue("Location, name", () -> created.setName(new Scanner(System.in).nextLine()));
         return created;
     }
 
     @Override
     public String getDesctiption() {
-        return "добавить новый элемент в коллекцию";
+        return "add a new item to the collection";
     }
 
     @Override

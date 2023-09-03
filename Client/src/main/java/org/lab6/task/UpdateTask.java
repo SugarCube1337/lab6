@@ -1,38 +1,84 @@
 package org.lab6.task;
 
-import org.lab6.collection.CollectionManager;
-import org.lab6.parser.InputManager;
+import com.google.gson.Gson;
+import org.lab6.Main;
+import org.lab6.collection.data.Coordinates;
+import org.lab6.collection.data.Location;
+import org.lab6.collection.data.Route;
+
+import java.util.Scanner;
 
 public class UpdateTask implements Task {
+    public void execute(String[] args) {
+        if(args.length < 1) {
+            System.out.println("The id must be specified, use: update [id]");
+            return;
+        }
+        Route existed;
+        try {
+            existed = Main.getConnectionManager().get(Integer.parseInt(args[0]));
+            if(existed == null)
+                throw new IllegalArgumentException();
+        } catch(Exception ex) {
+            System.out.println("Object with the specified id was not found!");
+            return;
+        }
+        if (args.length > 1) {
+            try {
+                String jsonInput = String.join(" ", args);
+                Gson gson = new Gson();
+                Route organization = gson.fromJson(jsonInput, Route.class);
 
-    private final InputManager inputManager;
-    private final long id;
+                if (Main.getConnectionManager().add(organization))
+                    System.out.println("Subject added.");
+            } catch (Exception ex) {
+                System.out.println("Incorrect object data entered or JSON reading error!");
+            }
+        }
+        Route created = new Route();
+        setValue("Name", () -> created.setName(new Scanner(System.in).nextLine()));
+        created.setCoordinates(createCoordinates());
+        setValue("Distance", () -> created.setDistance(new Scanner(System.in)));
+        created.setLocation(createLocation());
+        if (Main.getConnectionManager().add(created))
+            System.out.println("Subject added.");
+    }
 
-    public UpdateTask(InputManager inputManager, String id) throws IllegalArgumentException {
-        this.inputManager = inputManager;
-        this.id = Long.parseLong(id);
-        if (!CollectionManager.isIdPresent(this.id)) {
-            throw new IllegalArgumentException("No element with such id");
+    private void setValue(String label, Runnable setter) {
+        while (true) {
+            System.out.print("Enter " + label + ": ");
+            try {
+                setter.run();
+                break;
+            } catch (IllegalArgumentException ex) {
+                System.out.println(ex.getMessage());
+            }
         }
     }
 
+    private Coordinates createCoordinates() {
+        Coordinates created = new Coordinates(0, 0);
+        setValue("Coordinates, X", () -> created.setX(new Scanner(System.in)));
+        setValue("Coordinates, Y", () -> created.setY(new Scanner(System.in)));
+        return created;
+    }
+
+
+    private Location createLocation() {
+        Location created = new Location(0, 0, null);
+        setValue("Location, X", () -> created.setX(new Scanner(System.in)));
+        setValue("Location, Y", () -> created.setY(new Scanner(System.in)));
+        setValue("Location, name", () -> created.setName(new Scanner(System.in).nextLine()));
+        return created;
+    }
+
     @Override
-    public void execute() {
-        while (true) {
-            var route = Tasks.getRoute(inputManager);
-            System.out.println("You are about to update route with id " + id + ":");
-            System.out.println(route);
-            if (Tasks.getApproval("Proceed", inputManager)) {
-                if (CollectionManager.update(route, id)) {
-                    System.out.println("Successfully updated element");
-                } else {
-                    System.out.println("Element wasn't updated");
-                }
-                return;
-            }
-            if (!Tasks.getApproval("Do you want to refill element with another values", inputManager)) {
-                return;
-            }
-        }
+    public String getDesctiption() {
+        return "add a new item to the collection";
+    }
+
+    @Override
+    public String[] getArgumentNames() {
+        return new String[0];
     }
 }

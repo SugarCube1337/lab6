@@ -47,6 +47,25 @@ public class ConnectionManager {
             throw new ServerRuntimeException("Failed to carry out the deletion.");
     }
 
+    public boolean removeLast() {
+        ServerCommand response = send(new ServerCommand(ServerCommandType.REMOVE_LAST, null));
+        if (response.type == ServerCommandType.ERROR)
+            throw new ServerRuntimeException("Не удалось удалить элемент.");
+        return response.data[0] == 1;
+    } // false = коллекция пуста
+
+    public void reorder() {
+        if (send(new ServerCommand(ServerCommandType.REORDER, null)).type == ServerCommandType.ERROR)
+            throw new ServerRuntimeException("Не удалось выполнить операцию.");
+    }
+
+    public Route getMaxByDistance() {
+        ServerCommand response = send(new ServerCommand(ServerCommandType.GET_MAX_DISTANCE, null));
+        if (response.type == ServerCommandType.ERROR)
+            throw new ServerRuntimeException("Не удалось получить информацию.");
+        return (Route) Utils.deserializeObject(response.data);
+    }
+
     public List<Object> show(int page) {
         ServerCommand response = send(new ServerCommand(ServerCommandType.SHOW, Utils.intToBytes(page)));
         if (response.type == ServerCommandType.ERROR) {
@@ -55,6 +74,13 @@ public class ConnectionManager {
             throw new ServerRuntimeException((String) Utils.deserializeObject(response.data));
         }
         return (List<Object>) Utils.deserializeObject(response.data);
+    }
+
+    public boolean removeById(int id) {
+        ServerCommand response = send(new ServerCommand(ServerCommandType.REMOVE_BY_ID, Utils.intToBytes(id)));
+        if (response.type == ServerCommandType.ERROR)
+            throw new ServerRuntimeException("Указанный элемент не найден.");
+        return response.data[0] == 1;
     }
 
     public boolean add(Route organization) {

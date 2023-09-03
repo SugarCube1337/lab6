@@ -1,8 +1,6 @@
 package org.lab6.task;
 
 import org.lab6.Main;
-import org.lab6.parser.CommandParser;
-import org.lab6.parser.InputManager;
 
 import java.io.*;
 import java.util.*;
@@ -16,7 +14,7 @@ public class ExecuteTask implements Task {
     @Override
     public void execute(String[] args) {
         if(args.length < 1) {
-            System.out.println("Необходимо указать имя файла, использование: execute_script [file_name]");
+            System.out.println("You need to specify the file name, the usage: execute_script [file_name]");
             return;
         }
         List<String> commands = new ArrayList<>();
@@ -33,7 +31,7 @@ public class ExecuteTask implements Task {
                         boolean pass = true;
                         for(String script : new ArrayList<>(executedScripts))
                             if(finished.contains(script)) {
-                                System.out.println("Нельзя запустить скрипт, запущенный ранее");
+                                System.out.println("You cannot run a script that has been run before");
                                 pass = false;
                                 break;
                             }
