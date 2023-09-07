@@ -4,6 +4,7 @@ import org.lab6.actions.Action;
 import org.lab6.udp.ChunksData;
 import org.lab6.udp.ServerCommand;
 import org.lab6.udp.ServerCommandType;
+import org.lab6.actions.*;
 
 import java.io.IOException;
 import java.net.*;
@@ -25,6 +26,21 @@ public class ConnectionManager {
 
     private Map<String, ChunksData> clientChunks = new HashMap<>();
     private Map<ServerCommandType, Action> actions = new LinkedHashMap<>();
+
+    public ConnectionManager() {
+        registerAction(ServerCommandType.GET_INFO, new InfoAction());
+        registerAction(ServerCommandType.SHOW, new ShowAction());
+        registerAction(ServerCommandType.ADD, new AddAction());
+        registerAction(ServerCommandType.UPDATE, new UpdateAction());
+        registerAction(ServerCommandType.REMOVE_BY_ID, new RemoveByIdAction());
+        registerAction(ServerCommandType.CLEAR, new ClearAction());
+        registerAction(ServerCommandType.REMOVE_LAST, new RemoveLastAction());
+        registerAction(ServerCommandType.REMOVE_GREATER, new RemoveGreaterAction());
+        registerAction(ServerCommandType.REORDER, new ReorderAction());
+        registerAction(ServerCommandType.GET_MAX_DISTANCE, new MaxByDistanceAction());
+        registerAction(ServerCommandType.GET, new GetAction());
+    }
+
 
     public void run() throws IOException {
         // Создаем канал и настраиваем его на неблокирующий режим

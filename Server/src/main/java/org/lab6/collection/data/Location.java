@@ -21,12 +21,11 @@ public class Location implements Serializable {
         return x;
     }
 
-    public void setX(Scanner scan) {
+    public void setX(float x) {
         try {
-            x = scan.nextFloat();
-        } catch (Exception ex) {
-            scan.nextLine();
-            x = 0;
+            this.x = x;
+        } catch(Exception ex) {
+            this.x = 0;
         }
     }
 
@@ -34,12 +33,11 @@ public class Location implements Serializable {
         return y;
     }
 
-    public void setY(Scanner scan) {
+    public void setY(double y) {
         try {
-            y = scan.nextDouble();
-        } catch (Exception ex) {
-            scan.nextLine();
-            y = 0;
+            this.x = x;
+        } catch(Exception ex) {
+            this.x = 0;
         }
     }
 

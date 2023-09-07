@@ -78,18 +78,10 @@ public class Route implements Serializable {
         return distance;
     }
 
-    public void setDistance(Scanner scan) {
-        float annualTurnover;
-        try {
-            annualTurnover = scan.nextFloat();
-        } catch (Exception ex) {
-            scan.nextLine();
-            throw new IllegalArgumentException("The value of the route distance must be a number");
-        }
-        if (annualTurnover == 0.0f)
-            throw new IllegalArgumentException("The route distance value cannot be empty");
-        scan.nextLine();
-        this.distance = annualTurnover;
+    public void setDistance(float distance) {
+        if(distance == 0.0f)
+            throw new IllegalArgumentException("The distance value cannot be empty");
+        this.distance = distance;
     }
 
 

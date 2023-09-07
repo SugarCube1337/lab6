@@ -16,34 +16,27 @@ public class Coordinates implements Serializable {
     private float x; //Поле не может быть null
     private int y;
 
-    public Coordinates() {
-    }
 
     public Coordinates(float x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public void setX(Scanner scan) {
-        Double x;
-        try {
-            x = scan.nextDouble();
-        } catch (Exception ex) {
-            scan.nextLine();
+    public void setX(float x) {
+        if (Float.isNaN(x)) {
             throw new IllegalArgumentException("The value of X must be a number");
         }
-
+        this.x = x;
     }
 
-    public void setY(Scanner scan) {
-        int y;
+    public void setY(int y) {
         try {
-            y = scan.nextInt();
-        } catch (Exception ex) {
-            scan.nextLine();
-            throw new IllegalArgumentException("The Y value must be a number");
+            Integer.parseInt(String.valueOf(y));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("The value of Y must be a number");
         }
 
+        this.y = y;
     }
 
     public float getX() {
