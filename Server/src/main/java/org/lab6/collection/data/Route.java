@@ -3,6 +3,7 @@ package org.lab6.collection.data;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.lab6.Main;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -12,7 +13,7 @@ import java.util.Scanner;
  * Represents a route with a unique ID, name, coordinates, creation date, start and end locations, and distance.
  */
 public class Route implements Serializable {
-    private static final long serialVersionUID = 6529685098267757690L-3L;
+    private static final long serialVersionUID = 6529685098267757690L - 3L;
     private Integer id;
     private String name;
     private Coordinates coordinates;
@@ -22,7 +23,7 @@ public class Route implements Serializable {
 
 
     public Route() {
-        id = -1;
+        id = Main.getStorageManager().getMaxId() + 1;
         creationDate = LocalDate.now();
     }
 
@@ -94,7 +95,7 @@ public class Route implements Serializable {
 
     @Override
     public String toString() {
-        return "Route{" + "id=" + id + ", name=" + name + ", coordinates=" + coordinates + ", creationDate=" + creationDate + ", Distance=" + distance +  ", location=" + location.toString() + '}';
+        return "Route{" + "id=" + id + ", name=" + name + ", coordinates=" + coordinates + ", creationDate=" + creationDate + ", Distance=" + distance + ", location=" + location.toString() + '}';
     }
 
     public static Route parseJSON(String json) {

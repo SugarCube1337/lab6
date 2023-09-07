@@ -1,17 +1,17 @@
 package org.lab6;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.lab6.collection.data.Route;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class StorageManager {
 
@@ -59,12 +59,174 @@ public class StorageManager {
     }
 
     /**
+     * Add object to collection
+     *
+     * @param route New Route
+     */
+    public void add(Route route) {
+        data.add(route);
+    }
+
+    /**
+     * Update collection object
+     *
+     * @param route Existing route
+     */
+    public void update(Route route) {
+        Route foundRoute = null;
+        for (Route existingRoute : data) {
+            if (Objects.equals(existingRoute.getId(), route.getId())) {
+                foundRoute = existingRoute;
+                break;
+            }
+        }
+
+        if (foundRoute != null) {
+            data.remove(foundRoute); // Удаляем существующий элемент
+            data.add(route); // Добавляем новый элемент
+        } else {
+            throw new NullPointerException("Editable object not found");
+        }
+    }
+
+    /**
+     * Remove object by id
+     *
+     * @param id ID
+     */
+    public void remove(int id) {
+        Route routeToRemove = null;
+        for (Route route : data) {
+            if (route.getId() == id) {
+                routeToRemove = route;
+                break;
+            }
+        }
+
+        if (routeToRemove != null) {
+            data.remove(routeToRemove);
+        } else {
+            throw new NullPointerException("An object with id " + id + " not found");
+        }
+    }
+
+    /**
+     * Remove objects with greater id
+     *
+     * @param id ID
+     */
+    public void removeGreater(int id) {
+        Set<Route> toRemove = new HashSet<>();
+        for (Route route : data) {
+            if (route.getId() > id) {
+                toRemove.add(route);
+            }
+        }
+
+        data.removeAll(toRemove);
+    }
+
+    /**
+     * Remove last element of the collection
+     */
+    public void removeLast() {
+        if (!data.isEmpty())
+            data.remove(data.size() - 1);
+        else
+            throw new NullPointerException("The collection is empty");
+    }
+
+    /**
+     * Clear collection
+     */
+    public void clear() {
+        data.clear();
+    }
+
+    /**
+     * Reverse collection elements
+     */
+    public void reverse() {
+        List<Route> dataList = new ArrayList<>(data);
+        int size = dataList.size();
+        for (int i = 0; i < size / 2; i++) {
+            Route temp = dataList.get(i);
+            dataList.set(i, dataList.get(size - i - 1));
+            dataList.set(size - i - 1, temp);
+        }
+        data = new HashSet<>(dataList);
+    }
+
+    /**
+     * Save collection to the file
+     *
+     * @param filename File name
+     * @throws IOException Exceptions with saving, i.e. access exceptions
+     */
+    public void save(String filename) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try (FileWriter fileWriter = new FileWriter(filename)) {
+            for (Route route : data) {
+                String jsonData = objectMapper.writeValueAsString(route);
+                fileWriter.write(jsonData);
+            }
+            ;
+        }
+    }
+
+
+    /**
      * Get active file name
      *
      * @return File name
      */
     public String getFilename() {
         return filename;
+    }
+
+    /**
+     * Get object by ID
+     *
+     * @param id ID
+     * @return Route or null
+     */
+    public Route get(int id) {
+        for (Route route : data) {
+            if (route.getId() == id) {
+                return route;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get max Id of existing objects
+     *
+     * @return Max id
+     */
+    public int getMaxId() {
+        int result = 0;
+        for (Route route : data)
+            result = Math.max(result, route.getId());
+        return result;
+    }
+
+    /**
+     * Get all objects
+     *
+     * @return All routes
+     */
+    public HashSet<Route> getAll() {
+        return data;
+    }
+
+    /**
+     * Get collection initialization date
+     *
+     * @return Initialization date
+     */
+    public LocalDate getInitializationDate() {
+        return initializationDate;
     }
 
 
