@@ -1,7 +1,7 @@
 package org.lab6;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.lab6.collection.data.Route;
 
@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class StorageManager {
@@ -164,13 +165,15 @@ public class StorageManager {
      * @throws IOException Exceptions with saving, i.e. access exceptions
      */
     public void save(String filename) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
+                .create();
+
         try (FileWriter fileWriter = new FileWriter(filename)) {
             for (Route route : data) {
-                String jsonData = objectMapper.writeValueAsString(route);
+                String jsonData = gson.toJson(route);
                 fileWriter.write(jsonData);
             }
-            ;
         }
     }
 

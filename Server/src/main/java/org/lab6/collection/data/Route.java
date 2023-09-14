@@ -6,8 +6,8 @@ import com.google.gson.JsonParser;
 import org.lab6.Main;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.Scanner;
+import java.time.LocalDateTime;
+
 
 /**
  * Represents a route with a unique ID, name, coordinates, creation date, start and end locations, and distance.
@@ -17,17 +17,17 @@ public class Route implements Serializable {
     private Integer id;
     private String name;
     private Coordinates coordinates;
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
     private Float distance;
     private Location location;
 
 
     public Route() {
         id = Main.getStorageManager().getMaxId() + 1;
-        creationDate = LocalDate.now();
+        creationDate = LocalDateTime.now();
     }
 
-    private Route(Integer id, String name, Coordinates coordinates, LocalDate creationDate, Float distance, Location location) {
+    private Route(Integer id, String name, Coordinates coordinates, LocalDateTime creationDate, Float distance, Location location) {
         this.id = id;
         this.name = name;
         this.coordinates = coordinates;
@@ -70,7 +70,7 @@ public class Route implements Serializable {
         this.location = location;
     }
 
-    public LocalDate getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
@@ -98,7 +98,7 @@ public class Route implements Serializable {
         String name = jsonObject.get("name").getAsString();
         float x = jsonObject.get("coordinates").getAsJsonObject().get("x").getAsFloat();
         int y = jsonObject.get("coordinates").getAsJsonObject().get("y").getAsInt();
-        LocalDate creationDate = LocalDate.parse(jsonObject.get("creationDate").getAsString());
+        LocalDateTime creationDate = LocalDateTime.parse(jsonObject.get("creationDate").getAsString());
         float distance = jsonObject.get("distance").getAsFloat();
 
         JsonObject locationObject = jsonObject.get("location").getAsJsonObject();

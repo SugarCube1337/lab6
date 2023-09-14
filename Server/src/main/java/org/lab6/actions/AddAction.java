@@ -20,6 +20,7 @@ public class AddAction implements Action {
         try {
             parsed = (Route) Utils.deserializeObject(args);
         } catch (Exception ex) {
+            ex.printStackTrace(); // Print the exception stack trace for debugging
             return new ServerCommand(ServerCommandType.ERROR, Utils.serializeObject("Incorrect object data received"));
         }
         Route created = new Route();
@@ -40,6 +41,7 @@ public class AddAction implements Action {
         try {
             Main.getStorageManager().save(Main.getStorageManager().getFilename());
         } catch (IOException ex) {
+            ex.printStackTrace(); // Print the exception stack trace for debugging
             return new ServerCommand(ServerCommandType.ERROR, Utils.serializeObject("Failed to save file"));
         }
         return new ServerCommand(ServerCommandType.ADD, new byte[]{1});
