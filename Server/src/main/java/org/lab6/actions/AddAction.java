@@ -34,16 +34,11 @@ public class AddAction implements Action {
         // Create a new route with the parsed data
         Route created = new Route();
         created.setName(parsed.getName());
-        Coordinates createdCoords = new Coordinates(0, 0);
-        createdCoords.setX(parsed.getCoordinates().getX());
-        createdCoords.setY(parsed.getCoordinates().getY());
+        Coordinates createdCoords = new Coordinates(parsed.getCoordinates().getX(), parsed.getCoordinates().getY());
         created.setCoordinates(createdCoords);
         created.setDistance(parsed.getDistance());
 
-        Location location = new Location(0, 0, "");
-        location.setName(parsed.getLocation().getName());
-        location.setX(parsed.getLocation().getX());
-        location.setY(parsed.getLocation().getY());
+        Location location = new Location(parsed.getLocation().getX(), parsed.getLocation().getY(), parsed.getLocation().getName());
         created.setLocation(location);
 
         // Add the created route to the storage manager

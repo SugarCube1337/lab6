@@ -30,12 +30,16 @@ public class AddTask implements Task {
 
         Route created = new Route();
         setValue("Name", () -> created.setName(new Scanner(System.in).nextLine()));
-        created.setCoordinates(createCoordinates());
+        Coordinates coordinates = createCoordinates();
+        created.setCoordinates(coordinates);
         setValue("Distance", () -> created.setDistance(new Scanner(System.in)));
-        created.setLocation(createLocation());
+        Location location = createLocation();
+        created.setLocation(location);
         if (Main.getConnectionManager().add(created))
             System.out.println("Subject added.");
+
     }
+
 
     private void setValue(String label, Runnable setter) {
         while (true) {

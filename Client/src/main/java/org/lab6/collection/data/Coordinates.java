@@ -16,8 +16,6 @@ public class Coordinates implements Serializable {
     private float x; //Поле не может быть null
     private int y;
 
-    public Coordinates() {
-    }
 
     public Coordinates(float x, int y) {
         this.x = x;
@@ -25,9 +23,8 @@ public class Coordinates implements Serializable {
     }
 
     public void setX(Scanner scan) {
-        Double x;
         try {
-            x = scan.nextDouble();
+            x = scan.nextFloat();
         } catch (Exception ex) {
             scan.nextLine();
             throw new IllegalArgumentException("The value of X must be a number");
@@ -36,7 +33,6 @@ public class Coordinates implements Serializable {
     }
 
     public void setY(Scanner scan) {
-        int y;
         try {
             y = scan.nextInt();
         } catch (Exception ex) {

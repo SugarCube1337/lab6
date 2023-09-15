@@ -97,8 +97,8 @@ public class Route implements Serializable {
                 ", name='" + name + '\'' +
                 ", coordinates=" + coordinates +
                 ", creationDate=" + creationDate +
-                ", location=" + location.toString() +
                 ", distance=" + distance +
+                ", location=" + location.toString() +
                 ']';
     }
 
@@ -107,13 +107,13 @@ public class Route implements Serializable {
         String name = Utils.unescapeString(fields[1]);
         float x = Float.parseFloat(fields[2]);
         int y = Integer.parseInt(fields[3]);
-        LocalDateTime creationDate = LocalDateTime.now();
-        float distance = Float.parseFloat(fields[5]);
+        float distance = Float.parseFloat(fields[4]);
         Coordinates coordinates = new Coordinates(x, y);
+        LocalDateTime creationDate = LocalDateTime.now();
 
-        float xL = Float.parseFloat(fields[2]);
-        float yL = Float.parseFloat(fields[2]);
-        String nameL = Utils.unescapeString(fields[6]);
+        float xL = Float.parseFloat(fields[5]);
+        float yL = Float.parseFloat(fields[6]);
+        String nameL = Utils.unescapeString(fields[7]);
         Location location = new Location(xL, yL, nameL);
 
         return new Route(id, name, coordinates, creationDate, distance, location);

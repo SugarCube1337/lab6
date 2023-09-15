@@ -21,13 +21,13 @@ import static org.lab6.Utils.*;
  * It manages server actions and processes incoming data from clients.
  */
 public class ConnectionManager {
-
     public static final int PACKET_SIZE = 64 - 8;
     //    public static final int PACKET_SIZE = 5*1024-8;
     private DatagramChannel channel;
     private Selector selector;
     private SocketAddress clientAddress;
 
+    private Map<String, Task> commands = new LinkedHashMap<>();
     private Map<String, ChunksData> clientChunks = new HashMap<>();
     private Map<ServerCommandType, Action> actions = new LinkedHashMap<>();
 
@@ -46,6 +46,7 @@ public class ConnectionManager {
         registerAction(ServerCommandType.REORDER, new ReorderAction());
         registerAction(ServerCommandType.GET_MAX_DISTANCE, new MaxByDistanceAction());
         registerAction(ServerCommandType.GET, new GetAction());
+        registerAction(ServerCommandType.SAVE, new ServerSaveCommand());
     }
 
 
@@ -60,9 +61,49 @@ public class ConnectionManager {
         int port = getPortFromUserInput();
         setupServer(port);
 
+        Scanner scanner = new Scanner(System.in);
+
+        Thread dataProcessingThread = new Thread(() -> {
+            while (true) {
+                try {
+                    handleClientRequests();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        dataProcessingThread.start();
+
         while (true) {
-            handleClientRequests();
+            System.out.print("> ");
+            String userInput = scanner.nextLine();
+
+            if (userInput.trim().equalsIgnoreCase("save")) {
+                ServerSaveCommand saveCommand = new ServerSaveCommand();
+                ServerCommand result = saveCommand.execute(null);
+
+                if (result.type == ServerCommandType.ERROR) {
+                    System.out.println("Error: " + Utils.deserializeObject(result.data));
+                } else {
+                    System.out.println("Server data saved successfully.");
+                }
+            } else {
+                executeInput(userInput);
+            }
         }
+    }
+
+    /**
+     * Executes a command based on user input.
+     *
+     * @param input Command with arguments
+     */
+    public final void executeInput(String input) {
+        String[] command = input.split(" ", 2);
+        if (!commands.containsKey(command[0]))
+            System.out.println("Unknown command: '" + command[0] + "'");
+        else
+            commands.get(command[0]).execute(command.length > 1 ? command[1].split(" ") : new String[0]);
     }
 
     /**
