@@ -18,7 +18,8 @@ import java.util.*;
 public class Client {
     private DatagramChannel channel = null;
     private Selector selector = null;
-    public static final int PACKET_SIZE = 64-8;;
+    public static final int PACKET_SIZE = 64 - 8;
+    ;
     //public static final int PACKET_SIZE = 5*1024-8;
 
     /**
@@ -37,15 +38,15 @@ public class Client {
 
         Scanner scanner = new Scanner(System.in);
         int port;
-        while (true){
+        while (true) {
             System.out.println("Enter the port:");
-            try{
+            try {
                 port = Integer.parseInt(scanner.nextLine());
-                if(available(port)){
+                if (available(port)) {
                     channel.connect(new InetSocketAddress("localhost", port));
                     break;
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println("The port doesn't fit");
             }
         }
@@ -61,47 +62,74 @@ public class Client {
      * @throws IOException if an I/O error occurs during communication
      */
     public byte[] sendMsg(byte[] message) throws IOException {
-        List<byte[]> chunks = splitByteArray(message);// Split the message into smaller chunks
+        List<byte[]> chunks = splitByteArray(message);
+        sendChunkCount(chunks.size());
+        sendChunks(chunks);
+        return receiveAndAssembleResponse();
+    }
+
+
+    /**
+     * Sends the total number of chunks to the server as the first information.
+     *
+     * @param chunkCount The number of message chunks
+     * @throws IOException if an I/O error occurs during communication
+     */
+    private void sendChunkCount(int chunkCount) throws IOException {
         List<byte[]> firstInfo = new ArrayList<>();
-        // Prepare and send the total number of chunks as the first information
-        firstInfo.add(new byte[]{1,1,1,1});// Indicates that this is the chunk count information
-        firstInfo.add(Utils.intToBytes(chunks.size())); // Send the number of chunks
+        firstInfo.add(new byte[]{1, 1, 1, 1}); // Indicates that this is the chunk count information
+        firstInfo.add(Utils.intToBytes(chunkCount)); // Send the number of chunks
         ByteBuffer bufferSize = ByteBuffer.wrap(Utils.joinByteArrays(firstInfo));
         channel.write(bufferSize);
-        for (int i = 0; i < chunks.size(); i++) {       // Send each chunk along with its index
+    }
+
+    /**
+     * Sends individual chunks to the server along with their indices.
+     *
+     * @param chunks The list of message chunks
+     * @throws IOException if an I/O error occurs during communication
+     */
+    private void sendChunks(List<byte[]> chunks) throws IOException {
+        for (int i = 0; i < chunks.size(); i++) {
             List<byte[]> chunkInfo = new ArrayList<>();
-            chunkInfo.add(new byte[]{0,0,0,0});
+            chunkInfo.add(new byte[]{0, 0, 0, 0});
             chunkInfo.add(Utils.intToBytes(i));
             chunkInfo.add(chunks.get(i));
             ByteBuffer buffer = ByteBuffer.wrap(Utils.joinByteArrays(chunkInfo));
             channel.write(buffer);
         }
-        ChunksData currentWorker = new ChunksData(1);// Prepare to receive and reconstruct the response from the server
-        while(currentWorker.isActual()) {
+    }
+
+    /**
+     * Receives and assembles the response from the server.
+     *
+     * @return The response received from the server
+     * @throws IOException if an I/O error occurs during communication
+     */
+    private byte[] receiveAndAssembleResponse() throws IOException {
+        ChunksData currentWorker = new ChunksData(1);
+        while (currentWorker.isActual()) {
             selector.select();
-            // Обрабатываем готовые ключи
             Iterator<SelectionKey> it = selector.selectedKeys().iterator();
             while (it.hasNext()) {
-                if(currentWorker.isReady())
+                if (currentWorker.isReady())
                     continue;
                 SelectionKey key = it.next();
                 it.remove();
-                // Если ключ готов к чтению
                 if (key.isReadable()) {
-                    ByteBuffer helpBuffer = ByteBuffer.allocate(PACKET_SIZE+8);
+                    ByteBuffer helpBuffer = ByteBuffer.allocate(PACKET_SIZE + 8);
                     channel.receive(helpBuffer);
-                    byte[] recieved = helpBuffer.array();
-                    byte validation = Utils.checkFirst4Bytes(recieved);
-                    if(validation == 1) {// Handle the received data based on validation
-                        byte[] size = Arrays.copyOfRange(recieved, 4, 8);
+                    byte[] received = helpBuffer.array();
+                    byte validation = Utils.checkFirst4Bytes(received);
+                    if (validation == 1) {
+                        byte[] size = Arrays.copyOfRange(received, 4, 8);
                         currentWorker = new ChunksData(Utils.fromByteArray(size));
-                    } else if(validation == 0) {
-                        int index = Utils.fromByteArray(Arrays.copyOfRange(recieved, 4, 8));
-                        byte[] data = Arrays.copyOfRange(recieved, 8, recieved.length);
+                    } else if (validation == 0) {
+                        int index = Utils.fromByteArray(Arrays.copyOfRange(received, 4, 8));
+                        byte[] data = Arrays.copyOfRange(received, 8, received.length);
                         currentWorker.addChunk(index, data);
-                        if(currentWorker.isReady()) {   // If all chunks have been received, assemble and return the full response
-                            byte[] response = currentWorker.getFullResponse();
-                            return response;
+                        if (currentWorker.isReady()) {
+                            return currentWorker.getFullResponse();
                         }
                     }
                 }
@@ -109,6 +137,7 @@ public class Client {
         }
         return null;
     }
+
     /**
      * Checks to see if a specific port is available.
      *
@@ -120,6 +149,7 @@ public class Client {
         }
         return true;
     }
+
     /**
      * Concatenates a list of byte arrays into a single byte array.
      *
@@ -155,8 +185,8 @@ public class Client {
             return Collections.singletonList(source);
         }
         List<byte[]> chunks = new ArrayList<>();
-        for(int i = 0; i <= (int)Math.ceil(source.length/PACKET_SIZE); i++) {
-            chunks.add(Arrays.copyOfRange(source, i*PACKET_SIZE, (i+1)*PACKET_SIZE));
+        for (int i = 0; i <= (int) Math.ceil(source.length / PACKET_SIZE); i++) {
+            chunks.add(Arrays.copyOfRange(source, i * PACKET_SIZE, (i + 1) * PACKET_SIZE));
         }
         return chunks;
     }
