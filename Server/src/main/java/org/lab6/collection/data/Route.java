@@ -87,7 +87,14 @@ public class Route implements Serializable {
 
     @Override
     public String toString() {
-        return "Route{" + "id=" + id + ", name=" + name + ", coordinates=" + coordinates + ", creationDate=" + creationDate + ", Distance=" + distance + ", location=" + location.toString() + '}';
+        return "Route[" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", coordinates=" + coordinates +
+                ", creationDate=" + creationDate +
+                ", location=" + location.toString() +
+                ", distance=" + distance +
+                ']';
     }
 
     public static Route parseJSON(String json) {

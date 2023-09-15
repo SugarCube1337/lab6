@@ -45,14 +45,14 @@ public class ExecuteTask implements Task {
                     line.append((char) c);
             }
         } catch(IOException ex) {
-            System.out.println("Не удалось прочитать данные из файла");
+            System.out.println("Failed to read data from file");
         }
         if(line.length() > 0 && line.toString().replace("\r", "").replace("\n", "").length() > 0) {
             if(line.toString().startsWith("execute_script")) {
                 boolean pass = true;
                 for(String script : new ArrayList<>(executedScripts))
                     if(line.toString().contains(script)) {
-                        System.out.println("Нельзя запустить скрипт, запущенный ранее");
+                        System.out.println("You cannot run a script that has been run before");
                         pass = false;
                         break;
                     }
@@ -69,7 +69,7 @@ public class ExecuteTask implements Task {
     }
     @Override
     public String getDesctiption() {
-        return "исполнить скрипт из указанного файла";
+        return "execute the script from the given file";
     }
     @Override
     public String[] getArgumentNames() {

@@ -38,7 +38,7 @@ public class ShowAction implements Action {
         int startIndex = page * PAGE_SIZE;
         int endIndex = Math.min((page + 1) * PAGE_SIZE, size);
 
-        List<Route> parsed = routeList.subList(startIndex, endIndex);
+        List<Route> parsed = new ArrayList<>(routeList.subList(startIndex, endIndex)); // Создаем копию подсписка
         response.add(parsed);
 
         return new ServerCommand(ServerCommandType.SHOW, Utils.serializeObject(response));

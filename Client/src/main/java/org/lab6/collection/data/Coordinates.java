@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class Coordinates implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = -5296510993918124324L;
+    private static final long serialVersionUID = 6529685098267757690L-1L;
 
     private float x; //Поле не может быть null
     private int y;

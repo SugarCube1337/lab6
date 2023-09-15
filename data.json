@@ -1,0 +1,57 @@
+[{
+  "id": 4,
+  "name": "2424",
+  "coordinates": {
+    "x": 0.0,
+    "y": 0
+  },
+  "creationDate": "14::сент.::2023 23::02::37",
+  "distance": 24.0,
+  "location": {
+    "x": 24.0,
+    "y": 0.0,
+    "name": "4"
+  }
+},{
+  "id": 3,
+  "name": "4353",
+  "coordinates": {
+    "x": 0.0,
+    "y": 0
+  },
+  "creationDate": "14::сент.::2023 23::02::34",
+  "distance": 35.0,
+  "location": {
+    "x": 35.0,
+    "y": 0.0,
+    "name": "3"
+  }
+},{
+  "id": 1,
+  "name": "1",
+  "coordinates": {
+    "x": 0.0,
+    "y": 0
+  },
+  "creationDate": "14::сент.::2023 23::02::18",
+  "distance": 1.0,
+  "location": {
+    "x": 1.0,
+    "y": 0.0,
+    "name": "1"
+  }
+},{
+  "id": 2,
+  "name": "2",
+  "coordinates": {
+    "x": 0.0,
+    "y": 0
+  },
+  "creationDate": "14::сент.::2023 23::02::31",
+  "distance": 23.0,
+  "location": {
+    "x": 23.0,
+    "y": 0.0,
+    "name": "23"
+  }
+}]

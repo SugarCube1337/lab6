@@ -12,13 +12,21 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.*;
 
+/**
+ * Manages the client-side communication with the server using UDP.
+ */
 public class Client {
     private DatagramChannel channel = null;
     private Selector selector = null;
     public static final int PACKET_SIZE = 64-8;;
     //public static final int PACKET_SIZE = 5*1024-8;
 
-
+    /**
+     * Initializes the UDP client, sets up the channel, and registers with a selector.
+     * Also, prompts the user to input the server port.
+     *
+     * @throws IOException if an I/O error occurs
+     */
     public Client() throws IOException {
         channel = DatagramChannel.open();
         channel.configureBlocking(false);
@@ -45,15 +53,22 @@ public class Client {
         channel.register(selector, SelectionKey.OP_READ);
     }
 
+    /**
+     * Sends a message to the server using UDP, breaking the message into packets.
+     *
+     * @param message The message to be sent
+     * @return The response received from the server
+     * @throws IOException if an I/O error occurs during communication
+     */
     public byte[] sendMsg(byte[] message) throws IOException {
-        List<byte[]> chunks = splitByteArray(message);
+        List<byte[]> chunks = splitByteArray(message);// Split the message into smaller chunks
         List<byte[]> firstInfo = new ArrayList<>();
-
-        firstInfo.add(new byte[]{1,1,1,1});
-        firstInfo.add(Utils.intToBytes(chunks.size()));
+        // Prepare and send the total number of chunks as the first information
+        firstInfo.add(new byte[]{1,1,1,1});// Indicates that this is the chunk count information
+        firstInfo.add(Utils.intToBytes(chunks.size())); // Send the number of chunks
         ByteBuffer bufferSize = ByteBuffer.wrap(Utils.joinByteArrays(firstInfo));
         channel.write(bufferSize);
-        for (int i = 0; i < chunks.size(); i++) {
+        for (int i = 0; i < chunks.size(); i++) {       // Send each chunk along with its index
             List<byte[]> chunkInfo = new ArrayList<>();
             chunkInfo.add(new byte[]{0,0,0,0});
             chunkInfo.add(Utils.intToBytes(i));
@@ -61,7 +76,7 @@ public class Client {
             ByteBuffer buffer = ByteBuffer.wrap(Utils.joinByteArrays(chunkInfo));
             channel.write(buffer);
         }
-        ChunksData currentWorker = new ChunksData(1);
+        ChunksData currentWorker = new ChunksData(1);// Prepare to receive and reconstruct the response from the server
         while(currentWorker.isActual()) {
             selector.select();
             // Обрабатываем готовые ключи
@@ -77,14 +92,14 @@ public class Client {
                     channel.receive(helpBuffer);
                     byte[] recieved = helpBuffer.array();
                     byte validation = Utils.checkFirst4Bytes(recieved);
-                    if(validation == 1) {
+                    if(validation == 1) {// Handle the received data based on validation
                         byte[] size = Arrays.copyOfRange(recieved, 4, 8);
                         currentWorker = new ChunksData(Utils.fromByteArray(size));
                     } else if(validation == 0) {
                         int index = Utils.fromByteArray(Arrays.copyOfRange(recieved, 4, 8));
                         byte[] data = Arrays.copyOfRange(recieved, 8, recieved.length);
                         currentWorker.addChunk(index, data);
-                        if(currentWorker.isReady()) {
+                        if(currentWorker.isReady()) {   // If all chunks have been received, assemble and return the full response
                             byte[] response = currentWorker.getFullResponse();
                             return response;
                         }
@@ -105,6 +120,12 @@ public class Client {
         }
         return true;
     }
+    /**
+     * Concatenates a list of byte arrays into a single byte array.
+     *
+     * @param chunks A list of byte arrays to be concatenated.
+     * @return A single byte array containing the concatenated data.
+     */
     public static byte[] joinByteArrays(List<byte[]> chunks) {
         int totalLength = 0;
         for (byte[] chunk : chunks) {
@@ -120,6 +141,13 @@ public class Client {
 
         return result;
     }
+
+    /**
+     * Splits a byte array into smaller chunks, each with a maximum size of PACKET_SIZE.
+     *
+     * @param source The source byte array to be split.
+     * @return A list of smaller byte arrays, each not exceeding PACKET_SIZE in size.
+     */
 
     public static List<byte[]> splitByteArray(byte[] source) {
         int maxChunkSize = PACKET_SIZE; //B если меняем тут, то меняем и в connect manager server: приходящие кб

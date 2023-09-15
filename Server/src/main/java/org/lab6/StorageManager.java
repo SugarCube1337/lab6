@@ -164,18 +164,29 @@ public class StorageManager {
      * @param filename File name
      * @throws IOException Exceptions with saving, i.e. access exceptions
      */
+
     public void save(String filename) throws IOException {
         Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
                 .create();
 
         try (FileWriter fileWriter = new FileWriter(filename)) {
+            fileWriter.write("["); // Открываем JSON-массив
+            boolean isFirst = true;
             for (Route route : data) {
-                String jsonData = gson.toJson(route);
-                fileWriter.write(jsonData);
+                if (!isFirst) {
+                    fileWriter.write(","); // Добавляем запятую между объектами JSON, кроме первого
+                } else {
+                    isFirst = false;
+                }
+                String jsonData = gson.toJson(route); // Serialize the Route object to JSON
+                fileWriter.write(jsonData); // Write the JSON data to the file
             }
+            fileWriter.write("]"); // Закрываем JSON-массив
         }
     }
+
 
 
     /**

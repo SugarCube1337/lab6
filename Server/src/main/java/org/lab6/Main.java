@@ -26,7 +26,7 @@ public class Main {
             try {
                 connectionManager.run();
             } catch (IOException ex) {
-                //ex.printStackTrace();
+                ex.printStackTrace();
                 System.out.println("Application restart..." + ex);
             }
         }

@@ -53,7 +53,11 @@ public class Location implements Serializable {
 
     @Override
     public String toString() {
-        return "Location{" + "x=" + x + ", y=" + y + ", name=" + name + '}';
+        return "Location[" +
+                "x=" + x +
+                ", y=" + y +
+                ", name='" + name + '\'' +
+                ']';
     }
 
 }

@@ -1,8 +1,6 @@
 package org.lab6.collection.data;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import org.lab6.Utils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -12,7 +10,7 @@ import java.util.Scanner;
  * Represents a route with a unique ID, name, coordinates, creation date, start and end locations, and distance.
  */
 public class Route implements Serializable {
-    private static final long serialVersionUID = 6529685098267757690L-3L;
+    private static final long serialVersionUID = 6529685098267757690L - 3L;
     private Integer id;
     private String name;
     private Coordinates coordinates;
@@ -78,43 +76,46 @@ public class Route implements Serializable {
     }
 
     public void setDistance(Scanner scan) {
-        float annualTurnover;
+        float routeDistance;
         try {
-            annualTurnover = scan.nextFloat();
+            routeDistance = scan.nextFloat();
         } catch (Exception ex) {
             scan.nextLine();
             throw new IllegalArgumentException("The value of the route distance must be a number");
         }
-        if (annualTurnover == 0.0f)
+        if (routeDistance == 0.0f)
             throw new IllegalArgumentException("The route distance value cannot be empty");
         scan.nextLine();
-        this.distance = annualTurnover;
+        this.distance = routeDistance;
     }
 
 
     @Override
     public String toString() {
-        return "Route{" + "id=" + id + ", name=" + name + ", coordinates=" + coordinates + ", creationDate=" + creationDate + ", Distance=" + distance +  ", location=" + location.toString() + '}';
+        return "Route[" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", coordinates=" + coordinates +
+                ", creationDate=" + creationDate +
+                ", location=" + location.toString() +
+                ", distance=" + distance +
+                ']';
     }
 
-    public static Route parseJSON(String json) {
-        Gson gson = new Gson();
-        JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+    public static Route parseJSON(String[] fields) {
+        int id = -1;
+        String name = Utils.unescapeString(fields[1]);
+        float x = Float.parseFloat(fields[2]);
+        int y = Integer.parseInt(fields[3]);
+        LocalDateTime creationDate = LocalDateTime.now();
+        float distance = Float.parseFloat(fields[5]);
+        Coordinates coordinates = new Coordinates(x, y);
 
-        Integer id = jsonObject.get("id").getAsInt();
-        String name = jsonObject.get("name").getAsString();
-        float x = jsonObject.get("coordinates").getAsJsonObject().get("x").getAsFloat();
-        int y = jsonObject.get("coordinates").getAsJsonObject().get("y").getAsInt();
-        LocalDateTime creationDate = LocalDateTime.parse(jsonObject.get("creationDate").getAsString());
-        float distance = jsonObject.get("distance").getAsFloat();
-
-        JsonObject locationObject = jsonObject.get("location").getAsJsonObject();
-        float xL = locationObject.get("x").getAsFloat();
-        float yL = locationObject.get("y").getAsFloat();
-        String nameL = locationObject.get("name").getAsString();
+        float xL = Float.parseFloat(fields[2]);
+        float yL = Float.parseFloat(fields[2]);
+        String nameL = Utils.unescapeString(fields[6]);
         Location location = new Location(xL, yL, nameL);
 
-        Coordinates coordinates = new Coordinates(x, y);
         return new Route(id, name, coordinates, creationDate, distance, location);
     }
 }

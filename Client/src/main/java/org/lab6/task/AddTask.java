@@ -17,16 +17,17 @@ public class AddTask implements Task {
     public void execute(String[] args) {
         if (args.length > 0) {
             try {
-                String jsonInput = String.join(" ", args);
-                Gson gson = new Gson();
-                Route organization = gson.fromJson(jsonInput, Route.class);
+                String[] fields = args[0].split(" ");
+                Route route = Route.parseJSON(fields);
 
-                if (Main.getConnectionManager().add(organization))
+                if (Main.getConnectionManager().add(route)) {
                     System.out.println("Subject added.");
+                }
             } catch (Exception ex) {
-                System.out.println("Incorrect object data entered or JSON reading error!");
+                System.out.println("Incorrect object data has been entered!");
             }
         }
+
         Route created = new Route();
         setValue("Name", () -> created.setName(new Scanner(System.in).nextLine()));
         created.setCoordinates(createCoordinates());

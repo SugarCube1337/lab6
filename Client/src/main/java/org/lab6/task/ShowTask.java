@@ -25,8 +25,8 @@ public class ShowTask implements Task {
             throw new ServerRuntimeException("An incorrect page number has been entered.");
         List<Object> response = Main.getConnectionManager().show(page);
         System.out.println("page " + page + " / " + (int) response.get(0));
-        for (Route organization : (ArrayList<Route>) response.get(1))
-            System.out.println(organization);
+        for (Route route : (ArrayList<Route>) response.get(1))
+            System.out.println(route);
     }
 
     @Override
