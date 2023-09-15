@@ -108,66 +108,34 @@ public class Client {
      */
     private byte[] receiveAndAssembleResponse() throws IOException {
         ChunksData currentWorker = new ChunksData(1);
-
         while (currentWorker.isActual()) {
             selector.select();
             Iterator<SelectionKey> it = selector.selectedKeys().iterator();
-
             while (it.hasNext()) {
-                if (currentWorker.isReady()) {
+                if (currentWorker.isReady())
                     continue;
-                }
-
                 SelectionKey key = it.next();
                 it.remove();
-
-                if (key.isReadable()) { // Если ключ доступен для чтения
+                if (key.isReadable()) {
                     ByteBuffer helpBuffer = ByteBuffer.allocate(PACKET_SIZE + 8);
                     channel.receive(helpBuffer);
                     byte[] received = helpBuffer.array();
                     byte validation = Utils.checkFirst4Bytes(received);
-
                     if (validation == 1) {
-                        currentWorker = handleValidation1(received, currentWorker);
+                        byte[] size = Arrays.copyOfRange(received, 4, 8);
+                        currentWorker = new ChunksData(Utils.fromByteArray(size));
                     } else if (validation == 0) {
-                        currentWorker = handleValidation0(received, currentWorker);
+                        int index = Utils.fromByteArray(Arrays.copyOfRange(received, 4, 8));
+                        byte[] data = Arrays.copyOfRange(received, 8, received.length);
+                        currentWorker.addChunk(index, data);
+                        if (currentWorker.isReady()) {
+                            return currentWorker.getFullResponse();
+                        }
                     }
                 }
             }
         }
-
         return null;
-    }
-
-    /**
-     * Handles the processing of data with validation code 1.
-     *
-     * @param received      The received data.
-     * @param currentWorker The ChunksData instance for handling received data.
-     * @return Updated ChunksData instance.
-     */
-    private ChunksData handleValidation1(byte[] received, ChunksData currentWorker) {
-        byte[] size = Arrays.copyOfRange(received, 4, 8);
-        return new ChunksData(Utils.fromByteArray(size));
-    }
-
-    /**
-     * Handles the processing of data with validation code 0.
-     *
-     * @param received      The received data.
-     * @param currentWorker The ChunksData instance for handling received data.
-     * @return Updated ChunksData instance.
-     */
-    private ChunksData handleValidation0(byte[] received, ChunksData currentWorker) {
-        int index = Utils.fromByteArray(Arrays.copyOfRange(received, 4, 8));
-        byte[] data = Arrays.copyOfRange(received, 8, received.length);
-        currentWorker.addChunk(index, data);
-
-        if (currentWorker.isReady()) {
-            return currentWorker;
-        }
-
-        return currentWorker;
     }
 
     /**
