@@ -6,7 +6,16 @@ import org.lab6.collection.data.Route;
 import org.lab6.udp.ServerCommand;
 import org.lab6.udp.ServerCommandType;
 
+/**
+ * The `GetAction` class represents an action for retrieving a specific route by its ID from the collection.
+ */
 public class GetAction implements Action {
+    /**
+     * Executes the get action to retrieve a route by its ID.
+     *
+     * @param args The arguments containing the ID of the route to retrieve.
+     * @return A `ServerCommand` containing the retrieved route or an error message if the route was not found.
+     */
     @Override
     public ServerCommand execute(byte[] args) {
         Route existed;

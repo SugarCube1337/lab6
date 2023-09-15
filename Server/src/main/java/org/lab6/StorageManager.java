@@ -14,6 +14,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * The `StorageManager` class is responsible for managing a collection of `Route` objects.
+ * It allows for saving, loading, adding, updating, and performing various operations on the collection.
+ */
 public class StorageManager {
 
     private String filename;
@@ -21,6 +25,11 @@ public class StorageManager {
     public static String autosaveName = System.getProperty("java.io.tmpdir") + "autosave.json";
     private HashSet<Route> data = new HashSet<>();
 
+    /**
+     * Constructs a `StorageManager` with the specified filename.
+     *
+     * @param filename The name of the file used for saving and loading the collection.
+     */
     public StorageManager(String filename) {
         this.filename = filename;
         this.initializationDate = LocalDate.now();

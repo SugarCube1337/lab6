@@ -2,6 +2,9 @@ package org.lab6.task;
 
 import org.lab6.Main;
 
+/**
+ * Executes the 'help' task to display information about available commands and their descriptions.
+ */
 public class HelpTask implements Task {
     @Override
     public void execute(String[] args) {

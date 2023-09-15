@@ -14,6 +14,12 @@ import java.io.IOException;
  * Command for updating element of the collection by id, based on AddCommand
  */
 public class UpdateAction implements Action {
+    /**
+     * Executes the update action.
+     *
+     * @param args The serialized route object as a byte array.
+     * @return A `ServerCommand` indicating the result of the update action.
+     */
     @Override
     public ServerCommand execute(byte[] args) {
         Route parsed = (Route) Utils.deserializeObject(args);
@@ -41,6 +47,7 @@ public class UpdateAction implements Action {
 
         Main.getStorageManager().update(existed);
         try {
+            // Save the updated collection to the file
             Main.getStorageManager().save(Main.getStorageManager().getFilename());
         } catch (IOException ex) {
             return new ServerCommand(ServerCommandType.ERROR, Utils.serializeObject("Failed to save file"));

@@ -3,6 +3,9 @@ package org.lab6.task;
 import org.lab6.Main;
 import org.lab6.collection.data.Route;
 
+/**
+ * Executes the 'max_by_distance' task to find and output the route with the longest distance.
+ */
 public class MaxByDistanceTask implements Task {
     @Override
     public void execute(String[] args) {

@@ -12,8 +12,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-
+/**
+ * The `InfoAction` class represents an action for retrieving information about the collection.
+ */
 public class InfoAction implements Action {
+    /**
+     * Executes the info action.
+     *
+     * @param args The arguments (not used in this action).
+     * @return A `ServerCommand` containing information about the collection.
+     */
     @Override
     public ServerCommand execute(byte[] args) {
         HashSet<Route> elements = Main.getStorageManager().getAll();

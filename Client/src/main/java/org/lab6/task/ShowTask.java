@@ -11,6 +11,13 @@ import java.util.List;
  * Command for showing current objects in collection
  */
 public class ShowTask implements Task {
+
+    /**
+     * Executes the 'show' task to display a page of Route objects from the collection.
+     *
+     * @param args Command-line arguments containing the page number to display.
+     * @throws ServerRuntimeException If an incorrect page number is entered.
+     */
     @Override
     public void execute(String[] args) {
         int page = 1;

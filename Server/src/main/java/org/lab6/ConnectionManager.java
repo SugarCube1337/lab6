@@ -16,6 +16,10 @@ import java.util.*;
 
 import static org.lab6.Utils.*;
 
+/**
+ * The `ConnectionManager` class handles communication with clients over UDP.
+ * It manages server actions and processes incoming data from clients.
+ */
 public class ConnectionManager {
 
     public static final int PACKET_SIZE = 64 - 8;
@@ -27,6 +31,9 @@ public class ConnectionManager {
     private Map<String, ChunksData> clientChunks = new HashMap<>();
     private Map<ServerCommandType, Action> actions = new LinkedHashMap<>();
 
+    /**
+     * Initializes the `ConnectionManager` by registering server actions.
+     */
     public ConnectionManager() {
         registerAction(ServerCommandType.GET_INFO, new InfoAction());
         registerAction(ServerCommandType.SHOW, new ShowAction());
@@ -42,6 +49,11 @@ public class ConnectionManager {
     }
 
 
+    /**
+     * Starts the UDP server and listens for incoming client requests.
+     *
+     * @throws IOException If an I/O error occurs during server operation.
+     */
     public void run() throws IOException {
         // Создаем канал и настраиваем его на неблокирующий режим
         channel = DatagramChannel.open();
@@ -136,6 +148,12 @@ public class ConnectionManager {
         return actions.get(action.type).execute(action.data);
     }
 
+    /**
+     * Checks if a port is available for binding.
+     *
+     * @param port The port to check.
+     * @return `true` if the port is available; otherwise, `false`.
+     */
     public static boolean available(int port) {
         if (port < 1023 || port > 65534) {
             return false;
@@ -167,6 +185,12 @@ public class ConnectionManager {
         return false;
     }
 
+    /**
+     * Splits a byte array into smaller chunks.
+     *
+     * @param source The byte array to split.
+     * @return A list of byte arrays representing the chunks.
+     */
     public static List<byte[]> splitByteArray(byte[] source) {
         int maxChunkSize = PACKET_SIZE;
         if (source.length <= maxChunkSize) {

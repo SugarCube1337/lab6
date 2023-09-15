@@ -8,18 +8,27 @@ import org.lab6.collection.data.Route;
 
 import java.util.Scanner;
 
+/**
+ * Represents a task for updating a Route object in the collection.
+ */
 public class UpdateTask implements Task {
+
+    /**
+     * Executes the task, allowing the user to update an existing Route object.
+     *
+     * @param args Command-line arguments passed to the task.
+     */
     public void execute(String[] args) {
-        if(args.length < 1) {
+        if (args.length < 1) {
             System.out.println("The id must be specified, use: update [id]");
             return;
         }
         Route existed;
         try {
             existed = Main.getConnectionManager().get(Integer.parseInt(args[0]));
-            if(existed == null)
+            if (existed == null)
                 throw new IllegalArgumentException();
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Object with the specified id was not found!");
             return;
         }
@@ -44,6 +53,12 @@ public class UpdateTask implements Task {
             System.out.println("Subject added.");
     }
 
+    /**
+     * Prompts the user to enter a value for a specified label until a valid value is provided.
+     *
+     * @param label  The label indicating what value to enter.
+     * @param setter A Runnable that sets the value entered by the user.
+     */
     private void setValue(String label, Runnable setter) {
         while (true) {
             System.out.print("Enter " + label + ": ");

@@ -6,6 +6,9 @@ import org.lab6.collection.data.Route;
 import org.lab6.udp.ServerCommand;
 import org.lab6.udp.ServerCommandType;
 
+/**
+ * Executes the 'max_by_distance' task to find and output the route with the longest distance.
+ */
 public class MaxByDistanceAction implements Action {
     @Override
     public ServerCommand execute(byte[] args) {

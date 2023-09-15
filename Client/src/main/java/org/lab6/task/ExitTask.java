@@ -7,7 +7,7 @@ public class ExitTask implements Task {
     }
     @Override
     public String getDesctiption() {
-        return "terminate the program (without saving to a file)";
+        return "exit the program";
     }
     @Override
     public String[] getArgumentNames() {

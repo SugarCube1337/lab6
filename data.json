@@ -1,39 +1,25 @@
 [{
-  "id": 4,
-  "name": "2424",
-  "coordinates": {
-    "x": 0.0,
-    "y": 0
-  },
-  "creationDate": "14::сент.::2023 23::02::37",
-  "distance": 24.0,
-  "location": {
-    "x": 24.0,
-    "y": 0.0,
-    "name": "4"
-  }
-},{
-  "id": 3,
-  "name": "4353",
-  "coordinates": {
-    "x": 0.0,
-    "y": 0
-  },
-  "creationDate": "14::сент.::2023 23::02::34",
-  "distance": 35.0,
-  "location": {
-    "x": 35.0,
-    "y": 0.0,
-    "name": "3"
-  }
-},{
   "id": 1,
   "name": "1",
   "coordinates": {
     "x": 0.0,
     "y": 0
   },
-  "creationDate": "14::сент.::2023 23::02::18",
+  "creationDate": "15::сент.::2023 14::08::15",
+  "distance": 1.0,
+  "location": {
+    "x": 1.0,
+    "y": 0.0,
+    "name": "1"
+  }
+},{
+  "id": 3,
+  "name": "1",
+  "coordinates": {
+    "x": 0.0,
+    "y": 0
+  },
+  "creationDate": "15::сент.::2023 14::10::35",
   "distance": 1.0,
   "location": {
     "x": 1.0,
@@ -47,11 +33,11 @@
     "x": 0.0,
     "y": 0
   },
-  "creationDate": "14::сент.::2023 23::02::31",
-  "distance": 23.0,
+  "creationDate": "15::сент.::2023 14::08::18",
+  "distance": 2.0,
   "location": {
-    "x": 23.0,
+    "x": 2.0,
     "y": 0.0,
-    "name": "23"
+    "name": "2"
   }
 }]

@@ -7,10 +7,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * The TypeAdapter for java.time.LocalDateTime class.
+ * The LocalDateTimeTypeAdapter class is used for serializing and deserializing LocalDateTime objects.
+ * It specifies the format for converting LocalDateTime to a string when saving to JSON and when loading from JSON.
  */
 public class LocalDateTimeTypeAdapter implements JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d::MMM::uuuu HH::mm::ss");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public JsonElement serialize(LocalDateTime localDateTime, Type srcType,
